@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
-import { Stock } from '../types';
+import React from 'react';
+import { Stock, StockType } from '../types';
 
 interface Props {
   stocks: Stock[];
   onRemoveStock: (id: string) => void;
-  nasdaqApiKey: string;
+  nasdaqApiKey?: string; // Now optional since we don't need it
 }
 
 const PortfolioList: React.FC<Props> = ({ stocks, onRemoveStock, nasdaqApiKey }) => {
@@ -17,9 +17,13 @@ const PortfolioList: React.FC<Props> = ({ stocks, onRemoveStock, nasdaqApiKey })
       <ul className="list-none p-0">
         {stocks.map((stock) => (
           <li key={stock.id} className="flex justify-between items-center p-2 border my-1 rounded">
-            <Link href={`/stock/${stock.ticker}?key=${nasdaqApiKey}`} className="text-blue-600 hover:underline">
-              <strong>{stock.ticker}</strong> - Qty: {stock.quantity} - Price: ${stock.price.toFixed(2)} ({stock.type}) - Date: {new Date(stock.date).toLocaleDateString()}
-            </Link>
+            <span className="flex gap-2">
+
+              <span className={stock.type === StockType.Buy ? "px-1 bg-green-500 text-white rounded" : "px-1 bg-red-500 text-white rounded"}>{stock.type.toUpperCase()}</span>
+
+              <strong>{stock.ticker}</strong> - Qty: {stock.quantity} - Price: ${stock.price.toFixed(2)}
+
+            </span>
             <button onClick={() => onRemoveStock(stock.id)} className="p-1 bg-red-500 text-white rounded ml-2">Remove</button>
           </li>
         ))}

@@ -32,7 +32,23 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
       >
-        <span>{isExpanded ? 'Hide' : 'Add New Stock'}</span>
+        <span className="flex items-center gap-2">
+          {isExpanded ? (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+              Hide Form
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Add New Stock
+            </>
+          )}
+        </span>
         <svg
           className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
@@ -87,7 +103,7 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
         />
       </div>
       
-      <div className="flex flex-col gap-1">
+      {/* <div className="flex flex-col gap-1">
         <label htmlFor="date" className="text-sm font-medium">Transaction Date</label>
         <input 
           id="date"
@@ -97,7 +113,7 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
           required 
           className="p-2 border rounded" 
         />
-      </div>
+      </div> */}
       
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium">Transaction Type</label>

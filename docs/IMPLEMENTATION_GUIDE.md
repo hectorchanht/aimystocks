@@ -246,55 +246,6 @@ const LANGUAGES = [
   // ... existing languages
   'Vietnamese', // NEW
   'Thai',       // NEW
-];
-```
-
-### Task 3: Modify Analysis Prompt
-
-```typescript
-// src/app/services/aiService.ts
-const getSystemPrompt = (language: string = 'English') => `
-You are a senior financial analyst...
-
-// Add new instructions here
-Additionally, focus on ESG factors and sustainability metrics.
-
-Output in this EXACT JSON format:
-{
-  "analysis": "...",
-  "insights": [...],
-  "recommendations": [...],
-  "esgScore": "..." // NEW FIELD
-}
-`;
-```
-
-### Task 4: Add LocalStorage Persistence
-
-```typescript
-// src/app/store/atoms.ts
-export const myNewAtom = atomWithStorage<MyType>(
-  'aimystocks-mynewdata',  // localStorage key
-  defaultValue             // default value
-);
-```
-
-## 🐛 Debugging Tips
-
-### 1. Check Browser Console
-```typescript
-console.log('Current stocks:', stocks);
-console.log('API response:', response.data);
-```
-
-### 2. Inspect LocalStorage
-```javascript
-// In browser console
-localStorage.getItem('aimystocks-stocks')
-```
-
-### 3. Check Atom Values
-```typescript
 import { useAtomValue } from 'jotai';
 
 const MyDebugComponent = () => {
@@ -304,7 +255,160 @@ const MyDebugComponent = () => {
 };
 ```
 
-### 4. API Error Handling
+### Task 3: Modify Analysis Prompt
+
+The system prompt can be customized in `/src/app/services/puterAIService.ts`:
+
+```typescript
+const getSystemPrompt = (language: string = 'English') => `You are a senior financial analyst with 20+ years in portfolio management and AI-driven insights. Before analyzing any portfolio, you MUST fetch and incorporate the LATEST real-time data.
+
+**CRITICAL DATA FETCHING REQUIREMENTS:**
+1. Access current stock prices for ALL tickers in the portfolio
+2. Retrieve recent news and market data (last 30 days)
+3. Check current market trends and sector performance
+4. Get latest financial metrics and analyst ratings
+5. Incorporate recent earnings reports and company announcements
+
+**Analysis Date:** Use CURRENT market data as of ${CURRENT_DATE}, not historical portfolio purchase prices.
+
+Follow this chain-of-thought:
+1) **Data Collection**: Fetch real-time prices, news, and market data for all stocks
+2) **Portfolio Valuation**: Calculate current total value using LATEST prices (not purchase prices)
+3) **Performance Analysis**: Compare current values vs purchase prices for gain/loss calculations
+4) **Market Context**: Analyze recent news, trends, and sector performance
+5) **Risk Assessment**: Evaluate based on current market conditions and recent developments
+6) **Recommendations**: Provide actionable advice based on CURRENT market data
+
+IMPORTANT: Provide your entire response in ${language}.
+
+**REQUIRED DATA POINTS TO INCLUDE:**
+- Current stock prices (not purchase prices)
+- Recent percentage changes (1D, 7D, 30D)
+- Market capitalization and volume data
+- Recent news sentiment and key events
+- Sector performance and market trends
+- Analyst ratings and price targets
+
+Output in this EXACT JSON format:
+{
+  "analysis": "Full detailed analysis in markdown format with sections: ## Current Market Summary, ## Portfolio Valuation, ## Performance Analysis, ## Market Trends, ## Risk Assessment, ## Recommendations (in ${language})",
+  "insights": ["Key insight 1 with current data", "Key insight 2 with market context", "Key insight 3 with recent developments"] (in ${language}),
+  "recommendations": ["Actionable recommendation 1 based on current data", "Recommendation 2 considering market trends", "Recommendation 3 with risk assessment"] (in ${language})
+}
+
+Be specific, data-driven, and professional. Use CURRENT market data throughout analysis. Limit analysis to 800 words.`;
+```
+
+**Key Changes:**
+- ✅ **Real-time Data Requirement**: AI must fetch current stock prices and news
+- ✅ **Current Market Focus**: Analysis based on today's market data, not historical prices
+- ✅ **Enhanced Analysis Structure**: More detailed sections for current market context
+- ✅ **Increased Word Limit**: 800 words to accommodate comprehensive current data analysis
+
+### 3. Error Handling & API Issues
+
+#### Alpha Vantage API Integration
+
+The application now uses Alpha Vantage API for real-time market data:
+
+```typescript
+// Fetch market data from Alpha Vantage
+const apiKey = process.env.NEXT_PUBLIC_ALPHAVANTAGE_API_KEY || process.env.ALPHAVANTAGE_API_KEY;
+
+const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+
+const response = await fetch(url);
+const data = await response.json();
+
+// Transform to consistent format
+if (data['Global Quote']) {
+  const quote = data['Global Quote'];
+  return {
+    symbol: quote['01. symbol'],
+    regularMarketPrice: parseFloat(quote['05. price']),
+    regularMarketChange: parseFloat(quote['09. change']),
+    regularMarketChangePercent: parseFloat(quote['10. change percent'].replace('%', '')),
+    // ... other fields
+  };
+}
+```
+
+**Important Notes:**
+- ✅ **API Key Required**: Set `ALPHAVANTAGE_API_KEY` in `.env` file
+- ✅ **Rate Limited**: 5 API calls per minute on free tier
+- ✅ **Sequential Fetching**: Fetches one symbol at a time to respect rate limits
+- ✅ **Error Handling**: Graceful fallback if API fails or reaches limits
+
+**Getting an Alpha Vantage API Key:**
+1. Visit [https://www.alphavantage.co/support/#api-key](https://www.alphavantage.co/support/#api-key)
+2. Sign up for a free account
+3. Get your API key from the dashboard
+4. Add it to your `.env` file as `ALPHAVANTAGE_API_KEY=your_key_here`
+
+**API Response Format (New V2 Format):**
+```json
+{
+  "success": true,
+  "service": {
+    "name": "ai-chat"
+  },
+  "result": {
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "{\"analysis\": \"...\", \"insights\": [...], \"recommendations\": [...]}",
+      "refusal": null,
+      "annotations": []
+    },
+    "logprobs": null,
+    "finish_reason": "stop",
+    "usage": [
+      {
+        "type": "prompt",
+        "model": "gpt-4.1-nano",
+        "amount": 679,
+        "cost": 6790
+      }
+    ],
+    "via_ai_chat_service": true
+  },
+  "metadata": {
+    "service_used": "openai-completion"
+  }
+}
+```
+
+**API Response Format (Legacy V1 Format):**
+```json
+{
+  "index": 0,
+  "message": {
+    "role": "assistant",
+    "content": "{\"analysis\": \"...\", \"insights\": [...], \"recommendations\": [...]}",
+    "refusal": null,
+    "annotations": []
+  },
+  "logprobs": null,
+  "finish_reason": "stop",
+  "usage": [
+    {
+      "type": "prompt",
+      "model": "gpt-4.1-nano",
+      "amount": 679,
+      "cost": 6790
+    }
+  ],
+  "via_ai_chat_service": true
+}
+```
+
+**Backward Compatibility:**
+- ✅ **Dual Format Support**: Handles both V1 and V2 API response formats
+- ✅ **Automatic Detection**: Identifies response format and parses accordingly
+- ✅ **Graceful Fallbacks**: Falls back to raw content if JSON parsing fails
+- ✅ **Error Handling**: Comprehensive error handling for both formats
+
+#### General API Error Handling
 ```typescript
 try {
   const result = await analyzePortfolio(stocks, config);
@@ -314,7 +418,7 @@ try {
 }
 ```
 
-## 📦 Adding Dependencies
+### 4. Adding Dependencies
 
 ```bash
 # Install new package
@@ -340,13 +444,14 @@ npm install -D package-name
 - Persist important data with `atomWithStorage`
 - Don't duplicate state
 
-### 3. Error Handling
+### 4. API Error Handling
 - Always handle API errors
 - Show user-friendly error messages
 - Log errors for debugging
 - Provide fallback UI
+- Use `useErrorBoundary` to catch unexpected errors
 
-### 4. Performance
+{{ ... }}
 - Avoid unnecessary re-renders
 - Use React.memo for expensive components
 - Lazy load heavy components

@@ -17,7 +17,7 @@ export interface Portfolio {
 }
 
 export interface AIConfig {
-  service: 'gemini' | 'grok' | 'chatgpt';
+  service: 'puter' | 'gemini' | 'grok' | 'chatgpt';
   apiKey: string;
   customPrompt?: string; // New: for additional context
   language?: string; // New: for analysis language
@@ -30,16 +30,35 @@ export interface AnalysisResult {
   error?: string;
 }
 
-// Nasdaq types
-export interface NasdaqStockData {
-  date: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
+// Alpha Vantage API types for real-time market data
+interface AlphaVantageQuote {
+  'Global Quote': {
+    '01. symbol': string;
+    '02. open': string;
+    '03. high': string;
+    '04. low': string;
+    '05. price': string;
+    '06. volume': string;
+    '07. latest trading day': string;
+    '08. previous close': string;
+    '09. change': string;
+    '10. change percent': string;
+  };
 }
 
-export interface NasdaqResponse {
-  data: NasdaqStockData[];
+interface AlphaVantageResponse {
+  'Global Quote'?: {
+    '01. symbol': string;
+    '02. open': string;
+    '03. high': string;
+    '04. low': string;
+    '05. price': string;
+    '06. volume': string;
+    '07. latest trading day': string;
+    '08. previous close': string;
+    '09. change': string;
+    '10. change percent': string;
+  };
+  Note?: string;
+  Information?: string;
 }

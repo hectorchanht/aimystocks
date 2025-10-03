@@ -3,10 +3,7 @@
 import React from 'react';
 import { useAtom } from 'jotai';
 import { AIConfig, AnalysisResult } from '../types';
-import { ChatGPTIcon } from './svgs/chatgpt';
-import { GeminiIcon } from './svgs/gemini';
-import { GrokIcon } from './svgs/grok';
-import { customPromptAtom, aiServiceAtom, resultAtom, languageAtom, isAnalyzingAtom } from '../store/atoms';
+import { customPromptAtom, resultAtom, languageAtom, isAnalyzingAtom } from '../store/atoms';
 
 interface Props {
   onAnalyze: (config: AIConfig) => void;
@@ -29,7 +26,6 @@ const LANGUAGES = [
 ];
 
 const AISelector: React.FC<Props> = ({ onAnalyze }) => {
-  const [service, setService] = useAtom(aiServiceAtom);
   const [customPrompt, setCustomPrompt] = useAtom(customPromptAtom);
   const [language, setLanguage] = useAtom(languageAtom);
   const [, setResult] = useAtom<AnalysisResult>(resultAtom);
@@ -37,63 +33,12 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
 
   const handleAnalyze = () => {
     setResult({analysis: ''})
-    onAnalyze({ service, apiKey: '', customPrompt, language });
+    onAnalyze({ service: 'puter', apiKey: '', customPrompt, language });
   };
 
   return (
     <div className="ai-selector my-4 flex flex-col items-center max-w-2xl mx-auto">
       <h2 className="text-xl font-bold mb-4">AI Analysis</h2>
-
-      <div className="w-full mb-4">
-        <label className="text-sm font-medium mb-2 block">Select AI Service</label>
-        <div className="grid grid-cols-3 gap-3">
-          <button
-            type="button"
-            onClick={() => setService('chatgpt')}
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'chatgpt'
-              ? 'rainbow-button shadow-md'
-              : 'border-gray-300  hover:border-green-400'
-              }`}
-          >
-            <ChatGPTIcon />
-            <span className="text-sm font-medium ">ChatGPT</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setService('gemini')}
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'gemini'
-              ? 'rainbow-button shadow-md'
-              : 'border-gray-300  hover:border-blue-400'
-              }`}
-          >
-            <GeminiIcon />
-            <span className="text-sm font-medium ">Gemini</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setService('grok')}
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'grok'
-              ? 'rainbow-button shadow-md'
-              : 'border-gray-300  hover:border-gray-600'
-              }`}
-          >
-            <GrokIcon />
-            <span className="text-sm font-medium ">Grok</span>
-          </button>
-        </div>
-      </div>
-
-      {/* <div className="w-full mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-        <div className="flex items-center gap-2 mb-2">
-          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-sm font-semibold text-green-800">No API Key Required!</span>
-        </div>
-        <p className="text-xs text-green-700">Powered by Puter.js - Free AI analysis with GPT-5 nano</p>
-      </div> */}
 
       <div className="w-full mb-4">
         <label htmlFor="language" className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -130,7 +75,7 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
       <button
         onClick={handleAnalyze}
         disabled={isAnalyzing}
-        className={`w-full p-3 rounded-lg transition-colors font-medium flex items-center justify-center gap-2 ${
+        className={`w-full p-3 rounded-lg   font-medium flex items-center justify-center btn-primary gap-2 ${
           isAnalyzing
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -145,7 +90,12 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
             Analyzing...
           </>
         ) : (
-          'Analyze Portfolio'
+          <>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            'Analyze Portfolio'
+          </>
         )}
       </button>
     </div>

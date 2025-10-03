@@ -8,19 +8,21 @@ aimystocks/
 │   ├── components/          # React components
 │   │   ├── AISelector.tsx   # AI service & language selector
 │   │   ├── AnalysisDisplay.tsx  # Results display with insights
+│   │   ├── LoadingSkeleton.tsx  # Loading state skeleton
 │   │   ├── PortfolioInput.tsx   # Stock entry form (collapsible)
 │   │   ├── PortfolioList.tsx    # Stock list display
-│   │   ├── StockDetail.tsx      # Individual stock details
+│   │   ├── StockDetail.tsx      # Yahoo Finance chart integration
 │   │   └── svgs/                # Icon components
 │   ├── services/            # Business logic
-│   │   └── aiService.ts     # AI API integration
+│   │   ├── aiService.ts     # AI API integration (deprecated)
+│   │   └── puterAIService.ts # Puter.js AI integration
 │   ├── store/               # State management
 │   │   └── atoms.ts         # Jotai atoms with localStorage
 │   ├── types/               # TypeScript interfaces
 │   │   └── index.ts         # Type definitions
 │   ├── stock/[ticker]/      # Dynamic stock routes
 │   ├── layout.tsx           # Root layout with fonts
-│   ├── page.tsx             # Main page component
+│   ├── page.tsx             # Main page with currency banner
 │   └── globals.css          # Global styles
 ├── docs/                    # Documentation
 └── public/                  # Static assets
@@ -32,26 +34,25 @@ aimystocks/
 All state is managed through Jotai atoms with localStorage persistence:
 
 - **`stocksAtom`** - Portfolio stock list
-- **`apiKeyAtom`** - AI service API key
 - **`customPromptAtom`** - Additional analysis context
+- **`ALPHAVANTAGE_API_KEYAtom`** - Alpha Vantage API key (optional)
 - **`languageAtom`** - Analysis output language
-- **`aiServiceAtom`** - Selected AI service (ChatGPT/Gemini/Grok)
-- **`nasdaqApiKeyAtom`** - Nasdaq API key for charts
 - **`resultAtom`** - Analysis results with insights & recommendations
+- **`isAnalyzingAtom`** - Loading state for analysis
 
 ### Component Hierarchy
 
 ```
 page.tsx (Main Container)
+├── Currency Banner (External link to moneyrate.lol)
 ├── PortfolioInput (Collapsible Form)
 ├── PortfolioList (Stock Display)
-│   └── StockDetail (Individual Stock)
+│   └── StockDetail (Yahoo Finance Charts)
 ├── AISelector (AI Configuration)
-│   ├── Service Buttons (ChatGPT/Gemini/Grok)
-│   ├── API Key Input
-│   ├── Language Selector
-│   └── Custom Prompt Textarea
+│   ├── Language Selector (12 languages)
+│   └── Custom Prompt Textarea (Optional context)
 └── AnalysisDisplay (Results)
+    ├── LoadingSkeleton (During analysis)
     ├── Main Analysis Card
     ├── Insights Section (Blue)
     └── Recommendations Section (Green)
@@ -70,15 +71,30 @@ User Input → PortfolioInput → stocksAtom → localStorage
 ```
 User Config → AISelector → handleAnalyze()
                               ↓
-                    analyzePortfolio(stocks, config)
+                    analyzePortfolioWithPuter(stocks, config)
                               ↓
-                    AI Service API Call
+                    Extract ticker symbols from portfolio
                               ↓
-                    parseAIResponse() → JSON extraction
+                    fetchMarketData(symbols) → Alpha Vantage API
+                              ↓
+                    Puter.js AI API Call (GPT-5 nano) + Market Data
+                              ↓
+                    parseAIResponse() → Structured JSON extraction
                               ↓
                     resultAtom → localStorage
                               ↓
                     AnalysisDisplay Render
+```
+
+### 3. Stock Chart Flow
+```
+Stock Click → StockDetail → fetchData()
+                              ↓
+                    Yahoo Finance API Call (Free, no key needed)
+                              ↓
+                    Chart Data → Recharts Visualization
+                              ↓
+                    Interactive Chart Display
 ```
 
 ## 🎨 Design System
@@ -104,24 +120,29 @@ User Config → AISelector → handleAnalyze()
 
 ### AI Services
 
-#### 1. OpenAI ChatGPT
+#### Puter.js AI (Primary)
 ```typescript
-POST https://api.openai.com/v1/chat/completions
-Model: gpt-4o-mini
-Headers: Authorization: Bearer {apiKey}
+// No API key required!
+window.puter.ai.chat(prompt) // Returns structured response
 ```
 
-#### 2. Google Gemini
+### Stock Data Services
+
+#### Alpha Vantage API (Primary)
 ```typescript
-POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent
-Query: ?key={apiKey}
+GET https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={API_KEY}
+// Requires API key authentication (ALPHAVANTAGE_API_KEY in .env)
+// Returns real-time stock quotes with price, volume, and change data
+// Rate limited to 5 calls per minute on free tier
+// Supports stocks, forex, crypto, and economic indicators
 ```
 
-#### 3. xAI Grok
+#### Yahoo Finance API (Charts)
 ```typescript
-POST https://api.x.ai/v1/chat/completions
-Model: grok-beta
-Headers: Authorization: Bearer {apiKey}
+GET https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?period1={start}&period2={end}&interval=1d
+// Free API (no authentication required)
+// Returns historical OHLCV data for stock charts
+// Supports 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max periods
 ```
 
 ### Response Format
@@ -150,11 +171,9 @@ English, Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean
 ### LocalStorage Keys
 ```
 aimystocks-stocks          → Stock portfolio
-aimystocks-apikey          → AI API key
 aimystocks-customprompt    → Custom analysis context
+aimystocks-alphavantage    → Alpha Vantage API key (optional)
 aimystocks-language        → Selected language
-aimystocks-aiservice       → Selected AI service
-aimystocks-nasdaqapikey    → Nasdaq API key
 aimystocks-result          → Analysis results
 ```
 
@@ -167,14 +186,21 @@ aimystocks-result          → Analysis results
 ## 🔒 Security Considerations
 
 ### API Keys
-- Stored in localStorage (client-side only)
-- Never sent to any backend server
-- Direct API calls from browser to AI services
-- Users responsible for their own API key security
+- ~~Stored in localStorage (client-side only)~~ (No longer needed for primary features)
+- ~~Never sent to any backend server~~
+- ~~Direct API calls from browser to AI services~~
+- ~~Users responsible for their own API key security~~
+
+### Current Security Model
+- **Puter.js**: No API keys required - completely free
+- **Yahoo Finance**: No authentication needed - public API
+- **Alpha Vantage**: API key optional for enhanced market data
+- **LocalStorage**: Only user data and preferences stored
+- **No Tracking**: No analytics or user data collection
 
 ### Best Practices
-- Use password input type for API keys
-- Clear sensitive data on logout (future feature)
+- API keys stored in environment variables when used
+- Clear sensitive data on component unmount (future enhancement)
 - Validate inputs before API calls
 - Handle API errors gracefully
 
@@ -190,9 +216,16 @@ aimystocks-result          → Analysis results
 - Only re-render components that use changed atoms
 - No prop drilling needed
 
+### Loading States
+- Interactive loading feedback during analysis
+- Skeleton loading components for better UX
+- Disabled buttons during async operations
+- Spinner animations for visual feedback
+
 ### Caching
 - LocalStorage acts as client-side cache
 - Analysis results cached until next analysis
+- User preferences cached
 - Font optimization with Next.js font loader
 
 ## 🧪 Testing Strategy (Future)
@@ -225,10 +258,12 @@ aimystocks-result          → Analysis results
 
 ### Potential Features
 1. **User Authentication**: Save portfolios to cloud
-2. **Real-time Stock Data**: Live price updates
+2. **Real-time Stock Data**: Live price updates with WebSocket
 3. **Portfolio Comparison**: Compare multiple portfolios
-4. **Export Reports**: PDF/CSV export
-5. **Dark Mode**: Theme toggle
-6. **Notifications**: Price alerts
-7. **Social Sharing**: Share analysis results
-8. **Historical Analysis**: Track analysis over time
+4. **Export Reports**: PDF/CSV export functionality
+5. **Dark Mode**: Theme toggle for better accessibility
+6. **Notifications**: Price alerts and analysis updates
+7. **Social Sharing**: Share analysis results and portfolios
+8. **Historical Analysis**: Track analysis over time with charts
+9. **Mobile App**: Native iOS/Android apps with offline support
+10. **Advanced AI Features**: Sentiment analysis and news integration

@@ -1,14 +1,37 @@
 # 📚 AImySTOCKS Documentation
 
-Welcome to the comprehensive documentation for AImySTOCKS! This folder contains everything you need to understand, extend, and maintain the project.
+Welcome to the **AImySTOCKS** documentation! This project provides AI-powered stock portfolio analysis using **Puter.js** for free AI analysis and **Alpha Vantage** for real-time market data.
 
-## 📖 Documentation Index
+## 🚀 Quick Start
 
-### For New Developers
+1. **No API Keys Required** for AI analysis (powered by Puter.js)
+2. **Optional**: Add Alpha Vantage API key for enhanced market data
+3. **Add your stocks** and click "Analyze Portfolio"
+4. **Get AI insights** in your preferred language
 
-Start here if you're new to the codebase:
+## 🎯 Current Tech Stack
 
-1. **[ARCHITECTURE.md](./ARCHITECTURE.md)** ⭐ **START HERE**
+### Core Technologies
+- **Next.js 15** with App Router
+- **React** with TypeScript
+- **Tailwind CSS** for styling
+- **Jotai** for state management
+
+### AI & Data Services
+- **Puter.js** - Free AI analysis (GPT-5 nano)
+- **Alpha Vantage** - Real-time market data (API key optional)
+- **Yahoo Finance** - Historical stock charts (no API key needed)
+
+### Features
+- ✅ **Free AI Analysis** - No API keys required
+- ✅ **Real-time Market Data** - Alpha Vantage integration
+- ✅ **Multi-language Support** - 12 languages
+- ✅ **Modern UI/UX** - Responsive design
+- ✅ **Privacy-focused** - Local storage only
+
+## 📚 Documentation Sections
+
+1. **[ARCHITECTURE.md](./ARCHITECTURE.md)**
    - Project structure overview
    - Component hierarchy
    - Data flow diagrams
@@ -16,247 +39,125 @@ Start here if you're new to the codebase:
    - API integration details
    - Design system guidelines
 
-2. **[IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)** ⭐ **ESSENTIAL**
+2. **[IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)**
    - Step-by-step development guide
    - How to add new features
    - Common tasks and solutions
    - Code examples and templates
-   - Debugging tips
    - Best practices
 
 3. **[FEATURES.md](./FEATURES.md)**
    - Complete feature list
    - UI/UX features
-   - Technical capabilities
-   - Future roadmap
+   - Technical specifications
+   - Current tech stack overview
 
-### Feature-Specific Documentation
+4. **[PUTER_INTEGRATION.md](./PUTER_INTEGRATION.md)**
+   - Puter.js setup and integration
+   - Alpha Vantage API integration
+   - Response format handling
+   - Troubleshooting guide
 
-Deep dives into specific features:
+## 🛠️ Setup & Configuration
 
-4. **[JOTAI_SETUP.md](./JOTAI_SETUP.md)**
-   - State management with Jotai
-   - LocalStorage persistence
-   - All atoms explained
-   - Usage examples
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Basic understanding of React/Next.js
 
-5. **[INSIGHTS_RECOMMENDATIONS_UPDATE.md](./INSIGHTS_RECOMMENDATIONS_UPDATE.md)**
-   - Structured AI output
-   - JSON parsing logic
-   - UI components for insights
-   - Implementation details
+### Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd aimystocks
 
-6. **[LANGUAGE_SELECTOR_UPDATE.md](./LANGUAGE_SELECTOR_UPDATE.md)**
-   - Multi-language support
-   - 12 supported languages
-   - Dynamic prompt generation
-   - UI implementation
+# Install dependencies
+npm install
 
-## 🎯 Quick Navigation
+# Start development server
+npm run dev
+```
 
-### I want to...
+### Optional Configuration
+```bash
+# .env file (optional)
+ALPHAVANTAGE_API_KEY=your_alpha_vantage_api_key_here
+```
 
-#### Understand the Project
-→ Read [ARCHITECTURE.md](./ARCHITECTURE.md)
+## 🌟 Key Features
 
-#### Add a New Feature
-→ Follow [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)
+### Free AI Analysis
+- **Puter.js Integration** - No API keys required
+- **GPT-5 Nano** - High-quality AI analysis
+- **Structured Output** - Analysis, insights, and recommendations
+- **Multi-language Support** - 12 languages available
 
-#### See All Features
-→ Check [FEATURES.md](./FEATURES.md)
+### Real-time Market Data
+- **Alpha Vantage API** - Professional financial data
+- **Live Stock Prices** - Current market data for all holding
+- **Rate Limited** - 5 calls per minute for free tier
+- **Fallback Strategy** - Graceful degradation if API fails
 
-#### Understand State Management
-→ Review [JOTAI_SETUP.md](./JOTAI_SETUP.md)
+### Historical Stock Charts
+- **Yahoo Finance API** - Free historical data
+- **Interactive Charts** - Customizable date ranges
+- **OHLCV Data** - Open, High, Low, Close, Volume
+- **No API Key Required** - Completely free
 
-#### Add a New AI Service
-→ See "Adding a new AI service" in [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)
+## 🎨 User Experience
 
-#### Add a New Language
-→ See "Task 2: Add a New Language" in [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)
+### Simple Workflow
+1. Add stocks to portfolio
+2. Click "Analyze Portfolio"
+3. Get AI insights with current market data
+4. View results in preferred language
 
-#### Modify the Analysis Prompt
-→ See "Task 3: Modify Analysis Prompt" in [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)
+### No Configuration Required
+- Zero setup for basic functionality
+- Optional API key for enhanced market data
+- All data stored locally for privacy
+- Works offline after initial load
 
-#### Debug an Issue
-→ See "Debugging Tips" in [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)
+## 📈 Project Status
 
-## 📋 Documentation Standards
+### ✅ Completed
+- Puter.js AI integration
+- Alpha Vantage market data integration
+- Yahoo Finance stock charts
+- Multi-language support
+- Modern UI/UX design
+- Comprehensive documentation
 
-All documentation in this folder follows these principles:
+### 🔄 Current Focus
+- Code cleanup and optimization
+- Documentation updates
+- Performance improvements
+- User experience enhancements
 
-### Structure
+## 🤝 Contributing
+
+### Development Guidelines
+- TypeScript for all new code
+- Component-based architecture
+- Jotai for state management
+- Tailwind CSS for styling
+- Comprehensive error handling
+
+### Documentation Standards
 - Clear headings and sections
 - Table of contents for long docs
-- Code examples with syntax highlighting
-- Visual diagrams where helpful
+- Code examples with explanations
+- Screenshots where helpful
+- Regular updates for accuracy
 
-### Content
-- Beginner-friendly explanations
-- Step-by-step instructions
-- Real-world examples
-- Common pitfalls and solutions
+## 📞 Support
 
-### Maintenance
-- Updated with every major feature
-- Version-controlled with code
-- Reviewed during code reviews
-- Feedback welcome!
-
-## 🔄 Documentation Updates
-
-### When to Update Docs
-
-Update documentation when you:
-- ✅ Add a new feature
-- ✅ Change existing functionality
-- ✅ Fix a bug that affects usage
-- ✅ Add a new dependency
-- ✅ Change the architecture
-- ✅ Discover a better practice
-
-### How to Update
-
-1. **Identify affected docs**: Which files need updates?
-2. **Make changes**: Update relevant sections
-3. **Add examples**: Include code samples if needed
-4. **Review**: Ensure accuracy and clarity
-5. **Commit**: Include docs in your PR
-
-## 🎓 Learning Path
-
-### For Complete Beginners
-
-```
-1. Read README.md (project overview)
-   ↓
-2. Read ARCHITECTURE.md (understand structure)
-   ↓
-3. Read IMPLEMENTATION_GUIDE.md (learn to code)
-   ↓
-4. Read FEATURES.md (see what's possible)
-   ↓
-5. Start coding! 🚀
-```
-
-### For Experienced Developers
-
-```
-1. Skim ARCHITECTURE.md (get the big picture)
-   ↓
-2. Jump to IMPLEMENTATION_GUIDE.md (find what you need)
-   ↓
-3. Reference feature docs as needed
-   ↓
-4. Start building! 🔨
-```
-
-## 🤝 Contributing to Docs
-
-Found a typo? Want to improve an explanation? We welcome contributions!
-
-### How to Contribute
-
-1. **Fork the repo**
-2. **Edit the docs** (Markdown files in `/docs`)
-3. **Submit a PR** with clear description
-4. **Wait for review**
-
-### Writing Style
-
-- **Be clear**: Simple language, short sentences
-- **Be helpful**: Assume the reader is learning
-- **Be accurate**: Test your examples
-- **Be concise**: Respect the reader's time
-
-## 📞 Getting Help
-
-### Can't Find What You Need?
-
-1. **Search the docs**: Use Ctrl+F or search in your editor
-2. **Check the code**: Sometimes code is the best documentation
-3. **Ask the team**: Create an issue or ask in chat
-4. **Improve the docs**: Add what was missing!
-
-## 🗂️ File Organization
-
-```
-docs/
-├── README.md                              # This file (index)
-├── ARCHITECTURE.md                        # System design
-├── IMPLEMENTATION_GUIDE.md                # Developer guide
-├── FEATURES.md                            # Feature list
-├── JOTAI_SETUP.md                        # State management
-├── INSIGHTS_RECOMMENDATIONS_UPDATE.md     # Structured output
-└── LANGUAGE_SELECTOR_UPDATE.md           # Multi-language
-```
-
-## 📊 Documentation Metrics
-
-- **Total Docs**: 7 files
-- **Total Lines**: ~2000+ lines
-- **Code Examples**: 50+
-- **Diagrams**: Multiple
-- **Last Updated**: 2025-10-02
-
-## 🎯 Documentation Goals
-
-### Current Status
-- ✅ Architecture documented
-- ✅ Implementation guide complete
-- ✅ All features documented
-- ✅ Code examples provided
-- ✅ Best practices defined
-
-### Future Goals
-- 📹 Video tutorials
-- 🎨 Visual diagrams
-- 📝 API reference
-- 🧪 Testing guide
-- 🚀 Deployment guide
-
-## 💡 Tips for Reading Docs
-
-### Effective Reading
-1. **Start with overview**: Get the big picture first
-2. **Follow examples**: Try code samples yourself
-3. **Take notes**: Write down key concepts
-4. **Ask questions**: Don't hesitate to seek clarification
-5. **Practice**: Build something to solidify learning
-
-### Using Documentation
-- **Reference**: Keep docs open while coding
-- **Search**: Use Ctrl+F to find specific topics
-- **Bookmark**: Save frequently used sections
-- **Update**: Fix errors or add clarifications as you find them
-
-## 🌟 Documentation Quality
-
-We strive for:
-- ✅ **Accuracy**: All information is correct and tested
-- ✅ **Completeness**: All features are documented
-- ✅ **Clarity**: Easy to understand for all skill levels
-- ✅ **Currency**: Updated with every release
-- ✅ **Usefulness**: Practical examples and solutions
-
-## 📝 Feedback
-
-Help us improve! If you:
-- Find an error
-- Have a suggestion
-- Want more detail on something
-- Think something is unclear
-
-Please:
-1. Open an issue
-2. Submit a PR
-3. Contact the team
+For questions, issues, or contributions:
+- Check existing documentation first
+- Review implementation guides
+- Examine code examples
+- Follow troubleshooting steps
 
 ---
 
-<div align="center">
-
-**Happy Coding! 🚀**
-
-Made with 📚 by the AImySTOCKS team
-
-</div>
+**Built with ❤️ using modern web technologies for the best user experience!**

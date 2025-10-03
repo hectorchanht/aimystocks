@@ -1,12 +1,11 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import StockDetail from '../../components/StockDetail';
 
 export default function StockPage() {
-  const searchParams = useSearchParams();
-  const ticker = searchParams.get('ticker') || ''; // Fallback
-  const apiKey = searchParams.get('key') || '';
+  const params = useParams();
+  const ticker = params?.ticker as string || ''; // Get ticker from route parameter
 
-  return <StockDetail ticker={ticker} apiKey={apiKey} />;
+  return <StockDetail ticker={ticker} />;
 }
