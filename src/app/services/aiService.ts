@@ -55,7 +55,7 @@ const parseAIResponse = (rawResponse: string): AnalysisResult => {
         recommendations: parsed.recommendations || []
       };
     }
-  } catch (error) {
+  } catch {
     console.warn('Failed to parse structured response, using raw text');
   }
   
@@ -122,9 +122,10 @@ const analyzePortfolio = async (stocks: Stock[], config: AIConfig): Promise<Anal
       default:
         throw new Error('Unsupported AI service');
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('AI Analysis Error:', error);
-    return { analysis: '', error: error.response?.data?.error?.message || 'Failed to analyze. Check API key/service.' };
+    const errorMessage = error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data && error.response.data.error && typeof error.response.data.error === 'object' && 'message' in error.response.data.error ? String(error.response.data.error.message) : 'Failed to analyze. Check API key/service.';
+    return { analysis: '', error: errorMessage };
   }
 };
 

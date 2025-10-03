@@ -33,7 +33,7 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
   const [apiKey, setApiKey] = useAtom(apiKeyAtom);
   const [customPrompt, setCustomPrompt] = useAtom(customPromptAtom);
   const [language, setLanguage] = useAtom(languageAtom);
-  const [result, setResult] = useAtom<AnalysisResult>(resultAtom);
+  const [, setResult] = useAtom<AnalysisResult>(resultAtom);
 
   const handleAnalyze = () => {
     if (!apiKey) return alert('Please enter your API key.');

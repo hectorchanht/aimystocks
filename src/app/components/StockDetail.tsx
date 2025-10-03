@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { NasdaqStockData } from '../types';
 
 interface Props {
@@ -24,6 +24,7 @@ const StockDetail: React.FC<Props> = ({ ticker, apiKey }) => {
       return;
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, apiKey]);
 
   const fetchData = async () => {
@@ -34,17 +35,17 @@ const StockDetail: React.FC<Props> = ({ ticker, apiKey }) => {
         `https://data.nasdaq.com/api/v3/datatables/QUOTEMEDIA/PRICES?ticker=${ticker}&date.gte=${startDate}&date.lte=${endDate}&api_key=${apiKey}`
       );
       const rawData = response.data.datatable?.data || [];
-      const chartData = rawData.map((row: any[]) => ({
-        date: row[0],
-        open: parseFloat(row[1]),
-        high: parseFloat(row[2]),
-        low: parseFloat(row[3]),
-        close: parseFloat(row[4]),
-        volume: parseInt(row[5], 10)
+      const chartData = rawData.map((row: unknown[]) => ({
+        date: row[0] as string,
+        open: parseFloat(row[1] as string),
+        high: parseFloat(row[2] as string),
+        low: parseFloat(row[3] as string),
+        close: parseFloat(row[4] as string),
+        volume: parseInt(row[5] as string, 10)
       })).reverse();
       setData(chartData);
-    } catch (err: any) {
-      setError(`Error: ${err.message}. Check key/dates.`);
+    } catch (err: unknown) {
+      setError(`Error: ${err instanceof Error ? err.message : 'Unknown error'}. Check key/dates.`);
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,6 @@ const StockDetail: React.FC<Props> = ({ ticker, apiKey }) => {
           <Line yAxisId="left" type="monotone" dataKey="open" stroke="#82ca9d" name="Open" />
           <Line yAxisId="left" type="monotone" dataKey="high" stroke="#ff7300" name="High" />
           <Line yAxisId="left" type="monotone" dataKey="low" stroke="#ff0000" name="Low" />
-          <Bar yAxisId="right" dataKey="volume" fill="#413ea0" name="Volume" />
         </LineChart>
       </ResponsiveContainer>
       <p className="mt-2">Data points: {data.length}</p>
