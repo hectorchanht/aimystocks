@@ -49,7 +49,7 @@ const AnalysisDisplay: React.FC<Props> = ({ result }) => {
   if (!result.analysis) {
     return null;
   }
-console.log('result', result);
+
   return (
     <div className="analysis-container space-y-6 my-6">
       {/* Insights Section */}

@@ -10,27 +10,18 @@ interface Props {
   ticker: string;
 }
 
-interface FinnhubResponse {
-  'Meta Data': {
-    '1: Symbol': string;
-    '2: Last Refreshed': string;
-    '3: Output Size': string;
-    '4: Time Zone': string;
-  };
-  'Time Series (Daily)': {
-    [date: string]: {
-      '1. open': string;
-      '2. high': string;
-      '3. low': string;
-      '4. close': string;
-      '5. volume': string;
-    };
-  };
+interface ChartDataPoint {
+  date: string;
+  open: number | null;
+  high: number | null;
+  low: number | null;
+  close: number | null;
+  volume: number | null;
 }
 
 const StockDetail: React.FC<Props> = ({ ticker }) => {
   const [apiKey] = useAtom(FINNHUB_API_KEYAtom);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState('2024-01-01');
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +70,7 @@ const StockDetail: React.FC<Props> = ({ ticker }) => {
         low: lowPrices[index] || null,
         close: closePrices[index] || null,
         volume: volumes[index] || null,
-      })).filter((item: any) => item.close !== null);
+      })).filter((item: ChartDataPoint) => item.close !== null);
 
       if (chartData.length === 0) {
         throw new Error('No data available for the selected date range');

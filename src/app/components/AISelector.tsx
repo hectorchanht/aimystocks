@@ -32,7 +32,6 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
   const [isAnalyzing] = useAtom(isAnalyzingAtom);
 
   const handleAnalyze = () => {
-    console.log('AISelector - handleAnalyze called with customPrompt:', customPrompt);
     setResult({analysis: ''})
     onAnalyze({ service: 'puter', apiKey: '', customPrompt, language });
   };

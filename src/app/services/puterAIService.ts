@@ -8,37 +8,16 @@ const CURRENT_DATE = new Date().toLocaleDateString('en-US', {
   day: 'numeric'
 });
 
-// Alpha Vantage API Types
-interface AlphaVantageQuote {
-  'Global Quote': {
-    '01. symbol': string;
-    '02. open': string;
-    '03. high': string;
-    '04. low': string;
-    '05. price': string;
-    '06. volume': string;
-    '07. latest trading day': string;
-    '08. previous close': string;
-    '09. change': string;
-    '10. change percent': string;
-  };
-}
-
-interface AlphaVantageResponse {
-  'Global Quote'?: {
-    '01. symbol': string;
-    '02. open': string;
-    '03. high': string;
-    '04. low': string;
-    '05. price': string;
-    '06. volume': string;
-    '07. latest trading day': string;
-    '08. previous close': string;
-    '09. change': string;
-    '10. change percent': string;
-  };
-  Note?: string;
-  Information?: string;
+interface MarketData {
+  symbol: string;
+  currentPrice: number;
+  change: number;
+  changePercent: number;
+  high: number;
+  low: number;
+  open: number;
+  previousClose: number;
+  timestamp: number;
 }
 
 interface PuterAIUsage {
@@ -134,8 +113,7 @@ Output in this EXACT JSON format:
 Be specific, data-driven, and professional. Use CURRENT market data throughout analysis. Limit analysis to 800 words.`;
 
 // User prompt generator
-const getUserPrompt = (stocks: Stock[], marketData: any[], customPrompt: string = '') => {
-  console.log('getUserPrompt called with customPrompt:', customPrompt);
+const getUserPrompt = (stocks: Stock[], marketData: MarketData[], customPrompt: string = '') => {
   const portfolioSummary = JSON.stringify(stocks, null, 2);
 
   // Format market data for the prompt
@@ -154,22 +132,19 @@ IMPORTANT: You MUST use the LATEST market data provided above for all analysis:
 
 Focus on CURRENT market conditions and recent developments, not historical purchase data.`;
   if (customPrompt) {
-    console.log('Adding customPrompt to basePrompt:', customPrompt);
     basePrompt += `\nAdditional user context/instructions: ${customPrompt}`;
-  } else {
-    console.log('No customPrompt provided');
   }
   return basePrompt;
 };
 
 // Function to fetch latest market data from Finnhub
-const fetchMarketData = async (symbols: string[]): Promise<any[]> => {
+const fetchMarketData = async (symbols: string[]): Promise<MarketData[]> => {
   try {
     // Note: API key is handled server-side via Next.js API routes
     // No client-side API key needed for market data fetching
 
     // Finnhub allows 60 calls per minute for free tier, so we'll fetch sequentially
-    const marketData: any[] = [];
+    const marketData: MarketData[] = [];
 
     for (const symbol of symbols) {
       try {
@@ -316,11 +291,8 @@ const analyzePortfolioWithPuter = async (stocks: Stock[], config: AIConfig): Pro
 
     const language = config.language || 'English';
     const systemPrompt = getSystemPrompt(language);
-    console.log('analyzePortfolioWithPuter - config.customPrompt:', config.customPrompt);
     const userPrompt = getUserPrompt(stocks, marketData, config.customPrompt);
     const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
-
-    console.log('Full prompt being sent to AI:', fullPrompt);
 
     // Use Puter AI (no API key needed!)
     const response = await window.puter.ai.chat(fullPrompt);

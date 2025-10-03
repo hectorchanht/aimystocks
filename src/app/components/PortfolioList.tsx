@@ -1,16 +1,14 @@
 'use client';
 
-import Link from 'next/link';
 import React from 'react';
 import { Stock, StockType } from '../types';
 
 interface Props {
   stocks: Stock[];
   onRemoveStock: (id: string) => void;
-  nasdaqApiKey?: string; // Now optional since we don't need it
 }
 
-const PortfolioList: React.FC<Props> = ({ stocks, onRemoveStock, nasdaqApiKey }) => {
+const PortfolioList: React.FC<Props> = ({ stocks, onRemoveStock }) => {
   return (
     <div className="portfolio-list my-4">
       <h2 className="text-xl font-bold">Your Portfolio</h2>
