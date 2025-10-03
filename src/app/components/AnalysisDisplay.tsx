@@ -29,10 +29,10 @@ const formatMarkdown = (text: string): string => {
   html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 mb-2 flex items-start gap-2"><span class=" mt-1">•</span><span class="flex-1">$1</span></li>');
 
   // Wrap consecutive list items in ul
-  html = html.replace(/(<li class="ml-4.*?<\/li>\n?)+/g, (match) => `<ul class="space-y-1 my-3">${match}</ul>`);
+  html = html.replace(/(<li class="ml-4.*?<\/li>\n?)+/g, (match) => `<ul class="space-y-1">${match}</ul>`);
 
   // Line breaks
-  html = html.replace(/\n\n/g, '<br class="my-4" />');
+  html = html.replace(/\n\n/g, '<br class="my-2" />');
   html = html.replace(/\n/g, '<br />');
 
   // Numbers at start of line (metrics)

@@ -135,6 +135,7 @@ Be specific, data-driven, and professional. Use CURRENT market data throughout a
 
 // User prompt generator
 const getUserPrompt = (stocks: Stock[], marketData: any[], customPrompt: string = '') => {
+  console.log('getUserPrompt called with customPrompt:', customPrompt);
   const portfolioSummary = JSON.stringify(stocks, null, 2);
 
   // Format market data for the prompt
@@ -153,7 +154,10 @@ IMPORTANT: You MUST use the LATEST market data provided above for all analysis:
 
 Focus on CURRENT market conditions and recent developments, not historical purchase data.`;
   if (customPrompt) {
+    console.log('Adding customPrompt to basePrompt:', customPrompt);
     basePrompt += `\nAdditional user context/instructions: ${customPrompt}`;
+  } else {
+    console.log('No customPrompt provided');
   }
   return basePrompt;
 };
@@ -161,13 +165,8 @@ Focus on CURRENT market conditions and recent developments, not historical purch
 // Function to fetch latest market data from Finnhub
 const fetchMarketData = async (symbols: string[]): Promise<any[]> => {
   try {
-    // Get Finnhub API key from environment (server-side only now)
-    const apiKey = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
-
-    if (!apiKey) {
-      console.warn('Finnhub API key not found');
-      return [];
-    }
+    // Note: API key is handled server-side via Next.js API routes
+    // No client-side API key needed for market data fetching
 
     // Finnhub allows 60 calls per minute for free tier, so we'll fetch sequentially
     const marketData: any[] = [];
@@ -317,8 +316,11 @@ const analyzePortfolioWithPuter = async (stocks: Stock[], config: AIConfig): Pro
 
     const language = config.language || 'English';
     const systemPrompt = getSystemPrompt(language);
+    console.log('analyzePortfolioWithPuter - config.customPrompt:', config.customPrompt);
     const userPrompt = getUserPrompt(stocks, marketData, config.customPrompt);
     const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
+
+    console.log('Full prompt being sent to AI:', fullPrompt);
 
     // Use Puter AI (no API key needed!)
     const response = await window.puter.ai.chat(fullPrompt);

@@ -27,6 +27,9 @@ const PortfolioList: React.FC<Props> = ({ stocks, onRemoveStock, nasdaqApiKey })
             <button onClick={() => onRemoveStock(stock.id)} className="p-1 bg-red-500 text-white rounded ml-2">Remove</button>
           </li>
         ))}
+        <li className='text-lg font-bold mt-2 text-end'>
+          Total Valuation: {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(stocks.reduce((total, stock) => total + stock.price * stock.quantity, 0))}
+        </li>
       </ul>
     </div>
   );
