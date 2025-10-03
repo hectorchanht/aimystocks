@@ -6,7 +6,7 @@ import { AIConfig, AnalysisResult } from '../types';
 import { ChatGPTIcon } from './svgs/chatgpt';
 import { GeminiIcon } from './svgs/gemini';
 import { GrokIcon } from './svgs/grok';
-import { apiKeyAtom, customPromptAtom, aiServiceAtom, resultAtom, languageAtom } from '../store/atoms';
+import { customPromptAtom, aiServiceAtom, resultAtom, languageAtom, isAnalyzingAtom } from '../store/atoms';
 
 interface Props {
   onAnalyze: (config: AIConfig) => void;
@@ -30,15 +30,14 @@ const LANGUAGES = [
 
 const AISelector: React.FC<Props> = ({ onAnalyze }) => {
   const [service, setService] = useAtom(aiServiceAtom);
-  const [apiKey, setApiKey] = useAtom(apiKeyAtom);
   const [customPrompt, setCustomPrompt] = useAtom(customPromptAtom);
   const [language, setLanguage] = useAtom(languageAtom);
   const [, setResult] = useAtom<AnalysisResult>(resultAtom);
+  const [isAnalyzing] = useAtom(isAnalyzingAtom);
 
   const handleAnalyze = () => {
-    if (!apiKey) return alert('Please enter your API key.');
     setResult({analysis: ''})
-    onAnalyze({ service, apiKey, customPrompt, language });
+    onAnalyze({ service, apiKey: '', customPrompt, language });
   };
 
   return (
@@ -52,7 +51,7 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
             type="button"
             onClick={() => setService('chatgpt')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'chatgpt'
-              ? 'border-green-500 shadow-md'
+              ? 'rainbow-button shadow-md'
               : 'border-gray-300  hover:border-green-400'
               }`}
           >
@@ -64,7 +63,7 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
             type="button"
             onClick={() => setService('gemini')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'gemini'
-              ? 'border-blue-500 shadow-md'
+              ? 'rainbow-button shadow-md'
               : 'border-gray-300  hover:border-blue-400'
               }`}
           >
@@ -76,7 +75,7 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
             type="button"
             onClick={() => setService('grok')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'grok'
-              ? 'border-gray-800 shadow-md'
+              ? 'rainbow-button shadow-md'
               : 'border-gray-300  hover:border-gray-600'
               }`}
           >
@@ -86,17 +85,15 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
         </div>
       </div>
 
-      <div className="w-full mb-4">
-        <label htmlFor="apiKey" className="text-sm font-medium mb-2 block">API Key</label>
-        <input
-          id="apiKey"
-          type="password"
-          placeholder="Enter your API Key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-      </div>
+      {/* <div className="w-full mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-sm font-semibold text-green-800">No API Key Required!</span>
+        </div>
+        <p className="text-xs text-green-700">Powered by Puter.js - Free AI analysis with GPT-5 nano</p>
+      </div> */}
 
       <div className="w-full mb-4">
         <label htmlFor="language" className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -132,9 +129,24 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
 
       <button
         onClick={handleAnalyze}
-        className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+        disabled={isAnalyzing}
+        className={`w-full p-3 rounded-lg transition-colors font-medium flex items-center justify-center gap-2 ${
+          isAnalyzing
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-500 hover:bg-blue-600 text-white'
+        }`}
       >
-        Analyze Portfolio
+        {isAnalyzing ? (
+          <>
+            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Analyzing...
+          </>
+        ) : (
+          'Analyze Portfolio'
+        )}
       </button>
     </div>
   );

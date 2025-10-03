@@ -10,30 +10,34 @@ interface Props {
 // Helper function to convert markdown to HTML with better styling
 const formatMarkdown = (text: string): string => {
   let html = text;
-  
+
+  // if (!html || !html.hasOwnProperty('replace')) {
+  //   return '';
+  // }
+
   // Headers (##, ###)
   html = html.replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-6 mb-3  flex items-center gap-2"><span class="w-1 h-6 bg-blue-500 rounded"></span>$1</h3>');
   html = html.replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-8 mb-4  pb-2 border-b-2 border-blue-500">$1</h2>');
-  
+
   // Bold text
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold ">$1</strong>');
-  
+
   // Italic text
   html = html.replace(/\*(.*?)\*/g, '<em class="italic ">$1</em>');
-  
+
   // Lists (bullet points)
   html = html.replace(/^\- (.*$)/gim, '<li class="ml-4 mb-2 flex items-start gap-2"><span class=" mt-1">•</span><span class="flex-1">$1</span></li>');
-  
+
   // Wrap consecutive list items in ul
   html = html.replace(/(<li class="ml-4.*?<\/li>\n?)+/g, (match) => `<ul class="space-y-1 my-3">${match}</ul>`);
-  
+
   // Line breaks
   html = html.replace(/\n\n/g, '<br class="my-4" />');
   html = html.replace(/\n/g, '<br />');
-  
+
   // Numbers at start of line (metrics)
   html = html.replace(/^(\d+\.?\d*%?|\$\d+\.?\d*[KMB]?)/gim, '<span class="font-bold">$1</span>');
-  
+
   return html;
 };
 

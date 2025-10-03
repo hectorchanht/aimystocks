@@ -20,3 +20,7 @@ export const aiServiceAtom = atomWithStorage<'gemini' | 'grok' | 'chatgpt'>('aim
 export const languageAtom = atomWithStorage<string>('aimystocks-language', 'English');
 
 export const resultAtom = atomWithStorage<AnalysisResult>('aimystocks-result', { analysis: '' });
+
+// Atom for loading state (not persisted)
+import { atom } from 'jotai';
+export const isAnalyzingAtom = atom<boolean>(false);
