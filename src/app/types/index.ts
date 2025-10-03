@@ -20,10 +20,13 @@ export interface AIConfig {
   service: 'gemini' | 'grok' | 'chatgpt';
   apiKey: string;
   customPrompt?: string; // New: for additional context
+  language?: string; // New: for analysis language
 }
 
 export interface AnalysisResult {
   analysis: string;
+  insights?: string[];
+  recommendations?: string[];
   error?: string;
 }
 

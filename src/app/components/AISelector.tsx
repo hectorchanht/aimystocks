@@ -2,24 +2,43 @@
 
 import React from 'react';
 import { useAtom } from 'jotai';
-import { AIConfig } from '../types';
+import { AIConfig, AnalysisResult } from '../types';
 import { ChatGPTIcon } from './svgs/chatgpt';
 import { GeminiIcon } from './svgs/gemini';
 import { GrokIcon } from './svgs/grok';
-import { apiKeyAtom, customPromptAtom, aiServiceAtom } from '../store/atoms';
+import { apiKeyAtom, customPromptAtom, aiServiceAtom, resultAtom, languageAtom } from '../store/atoms';
 
 interface Props {
   onAnalyze: (config: AIConfig) => void;
 }
 
+const LANGUAGES = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Italian',
+  'Portuguese',
+  'Chinese (Traditional)',
+  'Chinese (Simplified)',
+  'Japanese',
+  'Korean',
+  'Arabic',
+  'Russian',
+  'Hindi'
+];
+
 const AISelector: React.FC<Props> = ({ onAnalyze }) => {
   const [service, setService] = useAtom(aiServiceAtom);
   const [apiKey, setApiKey] = useAtom(apiKeyAtom);
   const [customPrompt, setCustomPrompt] = useAtom(customPromptAtom);
+  const [language, setLanguage] = useAtom(languageAtom);
+  const [result, setResult] = useAtom<AnalysisResult>(resultAtom);
 
   const handleAnalyze = () => {
     if (!apiKey) return alert('Please enter your API key.');
-    onAnalyze({ service, apiKey, customPrompt });
+    setResult({analysis: ''})
+    onAnalyze({ service, apiKey, customPrompt, language });
   };
 
   return (
@@ -33,36 +52,36 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
             type="button"
             onClick={() => setService('chatgpt')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'chatgpt'
-              ? 'border-green-500 bg-green-50 shadow-md'
-              : 'border-gray-300 bg-white hover:border-green-400'
+              ? 'border-green-500 shadow-md'
+              : 'border-gray-300  hover:border-green-400'
               }`}
           >
             <ChatGPTIcon />
-            <span className="text-sm font-medium text-black">ChatGPT</span>
+            <span className="text-sm font-medium ">ChatGPT</span>
           </button>
 
           <button
             type="button"
             onClick={() => setService('gemini')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'gemini'
-              ? 'border-blue-500 bg-blue-50 shadow-md'
-              : 'border-gray-300 bg-white hover:border-blue-400'
+              ? 'border-blue-500 shadow-md'
+              : 'border-gray-300  hover:border-blue-400'
               }`}
           >
             <GeminiIcon />
-            <span className="text-sm font-medium text-black">Gemini</span>
+            <span className="text-sm font-medium ">Gemini</span>
           </button>
 
           <button
             type="button"
             onClick={() => setService('grok')}
             className={`flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all ${service === 'grok'
-              ? 'border-gray-800 bg-gray-100 shadow-md'
-              : 'border-gray-300 bg-white hover:border-gray-600'
+              ? 'border-gray-800 shadow-md'
+              : 'border-gray-300  hover:border-gray-600'
               }`}
           >
             <GrokIcon />
-            <span className="text-sm font-medium text-black">Grok</span>
+            <span className="text-sm font-medium ">Grok</span>
           </button>
         </div>
       </div>
@@ -77,6 +96,27 @@ const AISelector: React.FC<Props> = ({ onAnalyze }) => {
           onChange={(e) => setApiKey(e.target.value)}
           className="w-full p-2 border rounded"
         />
+      </div>
+
+      <div className="w-full mb-4">
+        <label htmlFor="language" className="text-sm font-medium mb-2 flex items-center gap-2">
+          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+          Analysis Language
+        </label>
+        <select
+          id="language"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          className="w-full p-2 border rounded bg-white"
+        >
+          {LANGUAGES.map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="w-full mb-4">

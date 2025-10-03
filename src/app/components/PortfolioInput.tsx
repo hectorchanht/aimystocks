@@ -13,6 +13,7 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
   const [price, setPrice] = useState(0);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [type, setType] = useState<StockType>(StockType.Buy);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +26,25 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="portfolio-input flex flex-col gap-4 my-4 max-w-md mx-auto">
+    <div className="my-4 max-w-md mx-auto">
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+      >
+        <span>{isExpanded ? 'Hide' : 'Add New Stock'}</span>
+        <svg
+          className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isExpanded && (
+        <form onSubmit={handleSubmit} className="portfolio-input flex flex-col gap-4 mt-4 p-4 border rounded-lg shadow-sm">
       <div className="flex flex-col gap-1">
         <label htmlFor="ticker" className="text-sm font-medium">Ticker Symbol</label>
         <input 
@@ -112,6 +131,8 @@ const PortfolioInput: React.FC<Props> = ({ onAddStock }) => {
         Add Stock
       </button>
     </form>
+      )}
+    </div>
   );
 };
 

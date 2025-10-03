@@ -17,4 +17,7 @@ export const nasdaqApiKeyAtom = atomWithStorage<string>('aimystocks-nasdaqapikey
 // Atom for selected AI service with localStorage persistence
 export const aiServiceAtom = atomWithStorage<'gemini' | 'grok' | 'chatgpt'>('aimystocks-aiservice', 'chatgpt');
 
+// Atom for analysis language with localStorage persistence
+export const languageAtom = atomWithStorage<string>('aimystocks-language', 'English');
+
 export const resultAtom = atomWithStorage<AnalysisResult>('aimystocks-result', { analysis: '' });
