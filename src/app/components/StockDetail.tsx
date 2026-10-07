@@ -1,10 +1,8 @@
 'use client';
 
 import axios from 'axios';
-import { useAtom } from 'jotai';
 import React, { useEffect, useState } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { FINNHUB_API_KEYAtom } from '../store/atoms';
 
 interface Props {
   ticker: string;
@@ -20,7 +18,6 @@ interface ChartDataPoint {
 }
 
 const StockDetail: React.FC<Props> = ({ ticker }) => {
-  const [apiKey] = useAtom(FINNHUB_API_KEYAtom);
   const [data, setData] = useState<ChartDataPoint[]>([]);
   const [startDate, setStartDate] = useState('2024-01-01');
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -85,18 +82,6 @@ const StockDetail: React.FC<Props> = ({ ticker }) => {
     }
   };
 
-  if (!apiKey) {
-    return (
-      <div className="stock-detail p-4">
-        <h2 className="text-2xl font-bold">{ticker} Stock Chart</h2>
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-yellow-800">
-            ⚠️ Chart data unavailable. Please check your internet connection or try again later.
-          </p>
-        </div>
-      </div>
-    );
-  }
   if (loading) return <div className="p-4">Loading {ticker} chart...</div>;
   if (error) return <div className="p-4 text-red-700">{error}</div>;
 
