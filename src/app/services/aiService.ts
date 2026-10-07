@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AIConfig, AnalysisResult, Stock } from '../types';
 
-const CURRENT_DATE = '2025-10-02'; // Updated to query date
+const CURRENT_DATE = new Date().toISOString().slice(0, 10); // query date, dynamic
 
 // Engineered System Prompt (role-playing, clarity, CoT, structured output)
 const getSystemPrompt = (language: string = 'English') => `You are a senior financial analyst with 20+ years in portfolio management and AI-driven insights. Analyze portfolios objectively using data as of ${CURRENT_DATE}. 

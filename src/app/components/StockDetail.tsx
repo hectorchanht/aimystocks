@@ -158,11 +158,15 @@ const StockDetail: React.FC<Props> = ({ ticker }) => {
           <YAxis yAxisId="left" tick={{ fontSize: 12 }} />
           <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} />
           <Tooltip
-            labelFormatter={(value) => new Date(value).toLocaleDateString()}
-            formatter={(value: number, name: string) => [
-              name === 'volume' ? `${value.toLocaleString()}` : `$${value.toFixed(2)}`,
-              name.charAt(0).toUpperCase() + name.slice(1)
-            ]}
+            labelFormatter={(value) => new Date(String(value)).toLocaleDateString()}
+            formatter={(value: unknown, name: string | number | undefined) => {
+              const num = typeof value === 'number' ? value : 0;
+              const label = String(name ?? '');
+              return [
+                label === 'volume' ? `${num.toLocaleString()}` : `$${num.toFixed(2)}`,
+                label.charAt(0).toUpperCase() + label.slice(1)
+              ];
+            }}
           />
           <Legend />
           <Line yAxisId="left" type="monotone" dataKey="close" stroke="#8884d8" strokeWidth={2} name="Close" dot={false} />
