@@ -220,7 +220,7 @@ MIT License - feel free to use this project however you want!
 
 ## 💬 Questions?
 
-- 📧 **Email**: your-email@example.com
+- 📧 **Email**: hello@hectorchan.com
 - 🐦 **Twitter**: @yourusername
 - 💼 **LinkedIn**: your-profile
 
