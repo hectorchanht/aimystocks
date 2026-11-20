@@ -235,3 +235,9 @@ MIT License - feel free to use this project however you want!
 [Report Bug](https://github.com/yourusername/aimystocks/issues) · [Request Feature](https://github.com/yourusername/aimystocks/issues)
 
 </div>
+
+## Licence
+
+This software is licensed under the PolyForm Noncommercial License 1.0.0 - see [LICENSE](LICENSE).
+
+Commercial or business use of this software requires the prior written acknowledgement of Dawn Studio.
